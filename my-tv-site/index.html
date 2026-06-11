@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nehal TV | Live Streaming</title>
+    
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f17; color: #fff; padding: 20px; }
+        .wrapper { max-width: 900px; margin: 0 auto; text-align: center; }
+        h1 { margin-bottom: 20px; color: #00ffcc; font-size: 28px; }
+        
+        /* ভিডিও প্লেয়ার স্টাইল */
+        .player-container { background: #000; padding: 10px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 30px; }
+        .video-js { width: 100% !important; height: auto; aspect-ratio: 16/9; border-radius: 8px; }
+        
+        /* চ্যানেল গ্রিড স্টাইল */
+        .channel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
+        .channel-btn { background: #1e1e2f; border: 2px solid #3b3b54; color: #fff; padding: 15px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; }
+        .channel-btn:hover { background: #00ffcc; color: #000; border-color: #00ffcc; transform: translateY(-3px); }
+        .channel-btn.active { background: #00ffcc; color: #000; border-color: #00ffcc; }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <h1>📺 NEHAL TV - লাইভ স্ট্রিমিং</h1>
+        
+        <div class="player-container">
+            <video id="tv-player" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay preload="auto">
+                <source id="video-source" src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" type="application/x-mpegURL">
+            </video>
+        </div>
+
+        <h2>চ্যানেল সমূহ</h2>
+        <div class="channel-grid">
+            <button class="channel-btn active" onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)">চ্যানেল ১ (টেস্ট)</button>
+            <button class="channel-btn" onclick="changeChannel('https://diceyk6a7voy4.cloudfront.net/e2bf9307-f9d6-4447-9b24-bfbe36df200a/master.m3u8', this)">চ্যানেল ২ (টেস্ট)</button>
+            </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+    
+    <script>
+        var player = videojs('tv-player');
+
+        // চ্যানেল পরিবর্তন করার ফাংশন
+        function changeChannel(streamUrl, buttonElement) {
+            // প্লেয়ারে নতুন লিঙ্ক সেট করা
+            player.src({
+                src: streamUrl,
+                type: 'application/x-mpegURL'
+            });
+            player.play();
+
+            // একটিভ বাটনের কালার চেঞ্জ করা
+            var buttons = document.getElementsByClassName('channel-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            buttonElement.classList.add('active');
+        }
+    </script>
+</body>
+</html>
