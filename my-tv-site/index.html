@@ -5,39 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>StreamVue · Live TV World</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       background: #0a0c10;
-      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Poppins', sans-serif;
+      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
       color: #f0f2f5;
       overflow-x: hidden;
     }
-
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #1e1f24;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #ff3b4a;
-      border-radius: 10px;
-    }
-
-    .app {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px 90px 20px;
-    }
-
-    /* Top Bar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #1e1f24; }
+    ::-webkit-scrollbar-thumb { background: #ff3b4a; border-radius: 10px; }
+    .app { max-width: 1400px; margin: 0 auto; padding: 0 20px 90px 20px; }
     .top-bar {
       display: flex;
       flex-wrap: wrap;
@@ -48,13 +32,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
       margin-bottom: 28px;
     }
-
-    .logo-area {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .logo-area { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
     .tv-name {
       font-size: 1.8rem;
       font-weight: 800;
@@ -62,7 +40,6 @@
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
-      letter-spacing: -0.3px;
     }
     .tv-badge {
       background: #ff3b4a20;
@@ -73,14 +50,12 @@
       color: #ff9f7c;
       border: 1px solid #ff5e6220;
     }
-
     .menu-links {
       display: flex;
       gap: 28px;
       background: #121317;
       padding: 6px 18px;
       border-radius: 60px;
-      backdrop-filter: blur(2px);
     }
     .menu-links a {
       color: #ddd;
@@ -92,13 +67,7 @@
       align-items: center;
       gap: 8px;
     }
-    .menu-links a i {
-      font-size: 1rem;
-    }
-    .menu-links a:hover, .menu-links a.active {
-      color: #ff7340;
-    }
-
+    .menu-links a:hover, .menu-links a.active { color: #ff7340; }
     .search-refresh {
       display: flex;
       gap: 12px;
@@ -108,14 +77,8 @@
       border-radius: 48px;
       border: 1px solid #2c2e36;
     }
-    .search-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .search-box i {
-      color: #ff8c5a;
-    }
+    .search-box { display: flex; align-items: center; gap: 10px; }
+    .search-box i { color: #ff8c5a; }
     .search-box input {
       background: transparent;
       border: none;
@@ -125,9 +88,7 @@
       width: 220px;
       outline: none;
     }
-    .search-box input::placeholder {
-      color: #6b6e7c;
-    }
+    .search-box input::placeholder { color: #6b6e7c; }
     .refresh-btn {
       background: #2a2c34;
       border: none;
@@ -138,12 +99,7 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    .refresh-btn:hover {
-      background: #ff5e62;
-      transform: rotate(30deg);
-    }
-
-    /* Categories */
+    .refresh-btn:hover { background: #ff5e62; transform: rotate(30deg); }
     .categories-wrapper {
       display: flex;
       flex-wrap: wrap;
@@ -163,17 +119,12 @@
       border: 1px solid #2a2c34;
       transition: all 0.2s;
     }
-    .category-chip i {
-      margin-right: 8px;
-    }
+    .category-chip i { margin-right: 8px; }
     .category-chip.active {
       background: #ff3b4a;
       color: white;
       border-color: #ff3b4a;
-      box-shadow: 0 4px 12px rgba(255,59,74,0.2);
     }
-
-    /* Channel Grid with Logo */
     .channels-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -196,13 +147,11 @@
       transform: translateY(-3px);
       background: #1a1d26;
       border-color: #ff7340;
-      box-shadow: 0 12px 20px -10px rgba(0,0,0,0.6);
     }
     .channel-logo {
       width: 52px;
       height: 52px;
       border-radius: 14px;
-      object-fit: cover;
       background: linear-gradient(135deg, #252a36, #181c24);
       display: flex;
       align-items: center;
@@ -212,16 +161,7 @@
       color: #ff8c5a;
       flex-shrink: 0;
     }
-    .channel-logo img {
-      width: 100%;
-      height: 100%;
-      border-radius: 14px;
-      object-fit: contain;
-    }
-    .channel-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .channel-info { flex: 1; min-width: 0; }
     .channel-info h4 {
       font-size: 0.9rem;
       font-weight: 600;
@@ -237,8 +177,6 @@
       align-items: center;
       gap: 4px;
     }
-
-    /* Live Highlight Banner */
     .live-highlight {
       background: linear-gradient(95deg, #1b1e2a, #0f1119);
       border-radius: 24px;
@@ -250,15 +188,8 @@
       flex-wrap: wrap;
       border-left: 6px solid #ff3b4a;
     }
-    .highlight-text h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
-    .highlight-text p {
-      color: #bcbfd0;
-      font-size: 0.85rem;
-      margin-top: 6px;
-    }
+    .highlight-text h3 { font-size: 1.2rem; font-weight: 700; }
+    .highlight-text p { color: #bcbfd0; font-size: 0.85rem; margin-top: 6px; }
     .live-badge {
       background: #ff3b4a;
       padding: 6px 14px;
@@ -269,8 +200,6 @@
       align-items: center;
       gap: 8px;
     }
-
-    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -295,31 +224,49 @@
       color: #a0a2b0;
       transition: 0.2s;
     }
-    .nav-item i {
-      font-size: 1.5rem;
+    .nav-item i { font-size: 1.5rem; }
+    .nav-item.active, .nav-item:hover { color: #ff7340; transform: translateY(-2px); }
+    .empty-msg { text-align: center; padding: 50px; color: #7b7e8c; }
+    /* ভিডিও প্লেয়ার মোডাল */
+    .player-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000e6;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
     }
-    .nav-item.active, .nav-item:hover {
-      color: #ff7340;
-      transform: translateY(-2px);
+    .player-modal.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .player-container {
+      width: 90%;
+      max-width: 1000px;
+      background: black;
+      border-radius: 20px;
+      overflow: hidden;
     }
-
-    .empty-msg {
-      text-align: center;
-      padding: 50px;
-      color: #7b7e8c;
+    .player-header {
+      background: #1a1d26;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
+    .close-player {
+      background: #ff3b4a;
+      border: none;
+      color: white;
+      padding: 6px 15px;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    video { width: 100%; max-height: 70vh; }
     @media (max-width: 700px) {
-      .app {
-        padding: 0 14px 90px;
-      }
-      .top-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .channels-grid {
-        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      }
+      .app { padding: 0 14px 90px; }
+      .top-bar { flex-direction: column; align-items: stretch; }
+      .channels-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
     }
   </style>
 </head>
@@ -356,6 +303,17 @@
   <div id="channelsContainer" class="channels-grid"></div>
 </div>
 
+<!-- ভিডিও প্লেয়ার মোডাল -->
+<div id="playerModal" class="player-modal">
+  <div class="player-container">
+    <div class="player-header">
+      <span id="currentChannelName">🎬 এখন চলছে</span>
+      <button class="close-player" onclick="closePlayer()">✕ বন্ধ করুন</button>
+    </div>
+    <video id="videoPlayer" class="video-js vjs-default-skin" controls autoplay></video>
+  </div>
+</div>
+
 <div class="bottom-nav" id="bottomNav">
   <div class="nav-item" data-tab="settings"><i class="fas fa-cog"></i><span>Settings</span></div>
   <div class="nav-item" data-tab="highlights"><i class="fas fa-chart-line"></i><span>Highlights</span></div>
@@ -365,7 +323,20 @@
 </div>
 
 <script>
-  // Complete channel list from screenshots
+  // ========================
+  // 🔴 এখানে আপনার চ্যানেলের স্ট্রিম লিংক বসান
+  // ========================
+  const channelStreams = {
+    "T Sports HD": "https://stream.obiram.xyz/stream/t-sports-hd/playlist.m3u8",
+    // নিচে আরও চ্যানেল যোগ করুন:
+    // "Star Sports 1": "https://example.com/star-sports-1.m3u8",
+    // "Sony Ten Cricket": "https://example.com/sony-ten-cricket.m3u8",
+  };
+
+  let currentHls = null;
+  let currentPlayer = null;
+
+  // চ্যানেল লিস্ট (আপনার আগের মতোই)
   const masterChannels = [
     "FIFA World Cup", "FIFA World Cup Arabic", "BTV NATIONAL HD", "BTV CTG", "T Sports HD", "Peace TV Bangla HD", "TIME TV USA", "CHANNEL I", "NTV", "BANGLA VISION", "RTV", "ATN Bangla", "ETV", "Maasranga Television", "Deepto TV", "GAZI TV", "DESH", "BOSHAKH TV", "CHANNEL 9", "Adian TV", "SA TV", "DURONTO TV", "BANGLA TV", "Ananda TV", "MY TV", "Global TV", "BJUY TV", "NEXUS Television", "MOHONA TV", "DRAMA 24", "SOMOV TV", "CHANNEL 24", "ATN NEWS", "Independent TV", "DBC NEWS", "Ekhon TV", "NEWS 24 BD", "EKATTOR TV", "JAMUNA TV", "MADANI TV", "Toffee Dramas", "Toffee Movies", "Movie Bangla", "Islamic TV",
     "Sky Sports Premier League", "Sky Sports Cricket", "Sky Sports Football", "Sky Sports F1", "Sky Sports News", "Sky Sports Main Event",
@@ -382,12 +353,8 @@
     "Euronews", "France 24", "RT News", "CGTN", "TRT World", "NHK World", "WION"
   ];
   
-  // Add numbered channels
-  for (let i = 1; i <= 100; i++) {
-    masterChannels.push(`CHANNEL ${i}`);
-  }
+  for (let i = 1; i <= 100; i++) masterChannels.push(`CHANNEL ${i}`);
   
-  // Logo database (real official logo URLs for major channels)
   const logoDatabase = {
     "sky sports": "https://logo.clearbit.com/sky.com",
     "sony": "https://logo.clearbit.com/sony.com",
@@ -396,94 +363,83 @@
     "bbc": "https://logo.clearbit.com/bbc.com",
     "hbo": "https://logo.clearbit.com/hbo.com",
     "disney": "https://logo.clearbit.com/disney.com",
-    "nickelodeon": "https://logo.clearbit.com/nick.com",
-    "cartoon network": "https://logo.clearbit.com/cartoonnetwork.com",
-    "national geographic": "https://logo.clearbit.com/natgeotv.com",
-    "discovery": "https://logo.clearbit.com/discovery.com",
-    "mtv": "https://logo.clearbit.com/mtv.com",
     "espn": "https://logo.clearbit.com/espn.com",
-    "fox sports": "https://logo.clearbit.com/foxsports.com",
-    "tnt sports": "https://logo.clearbit.com/tntsports.com",
-    "willow cricket": "https://logo.clearbit.com/willow.tv",
-    "zee": "https://logo.clearbit.com/zee.com",
-    "colors": "https://logo.clearbit.com/colors.in",
-    "eurosport": "https://logo.clearbit.com/eurosport.com",
-    "al jazeera": "https://logo.clearbit.com/aljazeera.com",
-    "france 24": "https://logo.clearbit.com/france24.com",
-    "bloomberg": "https://logo.clearbit.com/bloomberg.com",
-    "cnbc": "https://logo.clearbit.com/cnbc.com",
-    "msnbc": "https://logo.clearbit.com/msnbc.com",
-    "fox news": "https://logo.clearbit.com/foxnews.com",
-    "trt world": "https://logo.clearbit.com/trtworld.com",
-    "nhk world": "https://logo.clearbit.com/nhk.or.jp",
-    "wion": "https://logo.clearbit.com/wionews.com"
   };
   
   function getLogoUrl(channelName) {
     const nameLower = channelName.toLowerCase();
     for (const [key, url] of Object.entries(logoDatabase)) {
-      if (nameLower.includes(key)) {
-        return url;
-      }
+      if (nameLower.includes(key)) return url;
     }
     return null;
   }
   
-  function getInitials(name) {
-    return name.substring(0, 2).toUpperCase();
-  }
+  function getInitials(name) { return name.substring(0, 2).toUpperCase(); }
   
   function getGradientColor(name) {
-    const colors = [
-      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-      "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-      "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-      "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-      "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-      "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
-      "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
-    ];
+    const colors = ["linear-gradient(135deg, #667eea 0%, #764ba2 100%)", "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"];
     let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = ((hash << 5) - hash) + name.charCodeAt(i);
-      hash |= 0;
-    }
+    for (let i = 0; i < name.length; i++) { hash = ((hash << 5) - hash) + name.charCodeAt(i); hash |= 0; }
     return colors[Math.abs(hash) % colors.length];
   }
   
-  // Category detection
   function getChannelCategory(chName) {
     let name = chName.toLowerCase();
     const sports = ["sport", "cricket", "football", "fifa", "tennis", "nfl", "premier league", "la liga", "t20", "willow", "sky sport", "espn", "fox sport", "sony sports", "tnt sport", "star sports", "euro sport"];
     const movies = ["movie", "cinema", "film", "sony pix", "star movies", "hbo", "zee cinema", "bollywood"];
     const news = ["news", "cnn", "bbc", "al jazeera", "sky news", "ndtv", "cnbc", "msnbc", "reuters", "france 24", "bloomberg", "wion", "nhk", "cgtn", "trt"];
-    const kids = ["cartoon", "disney", "nick", "pbs kids", "pogo", "kids", "nick jr"];
-    
     if (sports.some(k => name.includes(k))) return "Sports";
     if (movies.some(k => name.includes(k))) return "Movies";
     if (news.some(k => name.includes(k))) return "News";
-    if (kids.some(k => name.includes(k))) return "Kids";
-    if (name.includes("music") || name.includes("mtv") || name.includes("9x") || name.includes("b4u")) return "Music";
-    if (name.includes("islam") || name.includes("peace") || name.includes("deen")) return "Religious";
+    if (name.includes("cartoon") || name.includes("disney") || name.includes("nick")) return "Kids";
+    if (name.includes("music") || name.includes("mtv")) return "Music";
     return "Entertainment";
   }
   
-  // Create unique channels
   let uniqueMap = new Map();
-  masterChannels.forEach(ch => {
-    if (!uniqueMap.has(ch)) {
-      uniqueMap.set(ch, {
-        name: ch,
-        category: getChannelCategory(ch),
-        logoUrl: getLogoUrl(ch)
-      });
-    }
-  });
+  masterChannels.forEach(ch => { if (!uniqueMap.has(ch)) uniqueMap.set(ch, { name: ch, category: getChannelCategory(ch), logoUrl: getLogoUrl(ch) }); });
   let channels = Array.from(uniqueMap.values());
-  
   let activeCategory = "All";
   let searchQuery = "";
+  
+  function openVideoPlayer(streamUrl, channelName) {
+    const modal = document.getElementById("playerModal");
+    const video = document.getElementById("videoPlayer");
+    const titleSpan = document.getElementById("currentChannelName");
+    
+    if (!streamUrl) {
+      alert(`🚫 "${channelName}" এর স্ট্রিম লিংক নেই!`);
+      return;
+    }
+    
+    modal.classList.add("active");
+    titleSpan.innerHTML = `🎬 ${channelName} - লাইভ`;
+    
+    if (currentHls) { currentHls.destroy(); currentHls = null; }
+    if (currentPlayer) { currentPlayer.pause(); currentPlayer.src = ''; }
+    
+    if (Hls.isSupported()) {
+      currentHls = new Hls();
+      currentHls.loadSource(streamUrl);
+      currentHls.attachMedia(video);
+      currentHls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      currentPlayer = video;
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = streamUrl;
+      video.play();
+      currentPlayer = video;
+    } else {
+      alert("আপনার ব্রাউজার লাইভ স্ট্রিম সাপোর্ট করে না।");
+      modal.classList.remove("active");
+    }
+  }
+  
+  function closePlayer() {
+    const modal = document.getElementById("playerModal");
+    modal.classList.remove("active");
+    if (currentHls) { currentHls.destroy(); currentHls = null; }
+    if (currentPlayer) { currentPlayer.pause(); currentPlayer.src = ''; }
+  }
   
   function renderChannels() {
     let filtered = channels.filter(ch => {
@@ -491,35 +447,23 @@
       const matchSearch = searchQuery === "" || ch.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
     });
-    
     const container = document.getElementById("channelsContainer");
-    if (filtered.length === 0) {
-      container.innerHTML = `<div class="empty-msg"><i class="fas fa-tv-slash"></i><br/>No channels found</div>`;
-      return;
-    }
+    if (filtered.length === 0) { container.innerHTML = `<div class="empty-msg"><i class="fas fa-tv-slash"></i><br/>No channels found</div>`; return; }
     
     container.innerHTML = filtered.map(ch => {
-      const logoHtml = ch.logoUrl 
-        ? `<img src="${ch.logoUrl}" onerror="this.parentElement.style.background='${getGradientColor(ch.name)}';this.style.display='none';this.parentElement.innerHTML='${getInitials(ch.name)}'">`
-        : `<span style="background: ${getGradientColor(ch.name)}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:14px;">${getInitials(ch.name)}</span>`;
-      
-      return `
-        <div class="channel-card" data-channel="${ch.name.replace(/"/g, '&quot;')}">
-          <div class="channel-logo">
-            ${logoHtml}
-          </div>
-          <div class="channel-info">
-            <h4>${ch.name}</h4>
-            <span><i class="fas fa-tag"></i> ${ch.category}</span>
-          </div>
-        </div>
-      `;
+      const logoHtml = ch.logoUrl ? `<img src="${ch.logoUrl}" onerror="this.parentElement.style.background='${getGradientColor(ch.name)}';this.style.display='none';this.parentElement.innerHTML='${getInitials(ch.name)}'">` : `<span style="background: ${getGradientColor(ch.name)}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:14px;">${getInitials(ch.name)}</span>`;
+      return `<div class="channel-card" data-channel="${ch.name.replace(/"/g, '&quot;')}"><div class="channel-logo">${logoHtml}</div><div class="channel-info"><h4>${ch.name}</h4><span><i class="fas fa-tag"></i> ${ch.category}</span></div></div>`;
     }).join('');
     
     document.querySelectorAll('.channel-card').forEach(card => {
       card.addEventListener('click', () => {
         const chName = card.getAttribute('data-channel');
-        alert(`📺 Now Playing: ${chName}\nStream URL will be integrated in app version.`);
+        const streamUrl = channelStreams[chName];
+        if (streamUrl) {
+          openVideoPlayer(streamUrl, chName);
+        } else {
+          alert(`📺 "${chName}"\n\n❌ স্ট্রিম লিংক যোগ করা হয়নি।\n\n🔧 সমাধান: কোডের channelStreams অবজেক্টে এই চ্যানেলের লিংক যোগ করুন।`);
+        }
       });
     });
   }
@@ -527,62 +471,40 @@
   function renderCategories() {
     const categories = ["All", ...new Set(channels.map(c => c.category))].sort();
     const container = document.getElementById("categoryList");
-    container.innerHTML = categories.map(cat => `
-      <div class="category-chip ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">
-        <i class="fas ${cat === 'All' ? 'fa-globe' : cat === 'Sports' ? 'fa-futbol' : cat === 'Movies' ? 'fa-film' : cat === 'News' ? 'fa-newspaper' : 'fa-tag'}"></i>
-        ${cat}
-      </div>
-    `).join('');
-    
-    document.querySelectorAll('.category-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        activeCategory = chip.getAttribute('data-cat');
-        renderCategories();
-        renderChannels();
-      });
-    });
+    container.innerHTML = categories.map(cat => `<div class="category-chip ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}"><i class="fas ${cat === 'All' ? 'fa-globe' : cat === 'Sports' ? 'fa-futbol' : cat === 'Movies' ? 'fa-film' : cat === 'News' ? 'fa-newspaper' : 'fa-tag'}"></i>${cat}</div>`).join('');
+    document.querySelectorAll('.category-chip').forEach(chip => { chip.addEventListener('click', () => { activeCategory = chip.getAttribute('data-cat'); renderCategories(); renderChannels(); }); });
   }
   
   function updateHighlight(tab) {
     const banner = document.getElementById("highlightBanner");
     const highlights = {
-      highlights: '<div class="highlight-text"><h3><i class="fas fa-fire"></i> 🔥 TOP HIGHLIGHTS</h3><p>FIFA WC Finals · T20 Blast 2025 · Premier League Goals</p></div><div class="live-badge"><i class="fas fa-eye"></i> 15+ Highlights</div>',
-      liveevents: '<div class="highlight-text"><h3><i class="fas fa-calendar-week"></i> 🟢 LIVE EVENTS NOW</h3><p>Vitality T20 Blast · LaLiga · Sky Sports Cricket Live</p></div><div class="live-badge"><i class="fas fa-dot-circle"></i> 8 LIVE MATCHES</div>',
-      sports: '<div class="highlight-text"><h3><i class="fas fa-medal"></i> 🏆 SPORTS ZONE</h3><p>All Sports: Willow Cricket, Star Sports, TNT, Sony Sports Network</p></div><div class="live-badge"><i class="fas fa-futbol"></i> 24/7 Sports</div>',
-      default: '<div class="highlight-text"><h3><i class="fas fa-tv"></i> 🔴 LIVE: FIFA World Cup · T Sports HD</h3><p>Vitality T20 Blast 2025 · Premier League · LaLiga</p></div><div class="live-badge"><i class="fas fa-circle"></i> 12 LIVE EVENTS</div>'
+      highlights: '<div class="highlight-text"><h3><i class="fas fa-fire"></i> 🔥 TOP HIGHLIGHTS</h3><p>FIFA WC Finals · T20 Blast 2025</p></div><div class="live-badge"><i class="fas fa-eye"></i> 15+ Highlights</div>',
+      liveevents: '<div class="highlight-text"><h3><i class="fas fa-calendar-week"></i> 🟢 LIVE EVENTS NOW</h3><p>Vitality T20 Blast · LaLiga Live</p></div><div class="live-badge"><i class="fas fa-dot-circle"></i> 8 LIVE MATCHES</div>',
+      sports: '<div class="highlight-text"><h3><i class="fas fa-medal"></i> 🏆 SPORTS ZONE</h3><p>Willow Cricket, Star Sports, TNT, Sony Sports</p></div><div class="live-badge"><i class="fas fa-futbol"></i> 24/7 Sports</div>',
+      default: '<div class="highlight-text"><h3><i class="fas fa-tv"></i> 🔴 LIVE: FIFA World Cup · T Sports HD</h3><p>Vitality T20 Blast 2025 · Premier League</p></div><div class="live-badge"><i class="fas fa-circle"></i> 12 LIVE EVENTS</div>'
     };
     banner.innerHTML = highlights[tab] || highlights.default;
   }
   
-  // Bottom navigation
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
       document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
       item.classList.add('active');
       const tab = item.getAttribute('data-tab');
-      
-      if (tab === 'settings') alert("⚙️ Settings: Language, Quality, Favorites (App ready)");
+      if (tab === 'settings') alert("⚙️ Settings: Language, Quality, Favorites");
       else if (tab === 'highlights') { updateHighlight('highlights'); activeCategory = "All"; searchQuery = ""; document.getElementById("searchInput").value = ""; renderCategories(); renderChannels(); }
       else if (tab === 'liveevents') { updateHighlight('liveevents'); activeCategory = "All"; searchQuery = ""; document.getElementById("searchInput").value = ""; renderCategories(); renderChannels(); }
       else if (tab === 'sports') { updateHighlight('sports'); activeCategory = "Sports"; renderCategories(); renderChannels(); }
-      else if (tab === 'categories') alert("📺 Browse by Categories using the chips above!");
+      else if (tab === 'categories') alert("📺 Categories ব্যবহার করুন উপরের চিপস থেকে!");
     });
   });
   
   document.getElementById("refreshBtn").addEventListener("click", () => {
-    searchQuery = "";
-    activeCategory = "All";
-    document.getElementById("searchInput").value = "";
-    renderCategories();
-    renderChannels();
-    updateHighlight('default');
+    searchQuery = ""; activeCategory = "All"; document.getElementById("searchInput").value = ""; renderCategories(); renderChannels(); updateHighlight('default');
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
   });
-  
-  document.getElementById("searchInput").addEventListener("input", (e) => {
-    searchQuery = e.target.value;
-    renderChannels();
-  });
+  document.getElementById("searchInput").addEventListener("input", (e) => { searchQuery = e.target.value; renderChannels(); });
+  document.getElementById("playerModal").addEventListener("click", (e) => { if (e.target === document.getElementById("playerModal")) closePlayer(); });
   
   renderCategories();
   renderChannels();
