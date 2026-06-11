@@ -1,68 +1,554 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nehal TV | Live Streaming</title>
-    
-    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f17; color: #fff; padding: 20px; }
-        .wrapper { max-width: 900px; margin: 0 auto; text-align: center; }
-        h1 { margin-bottom: 20px; color: #00ffcc; font-size: 28px; }
-        
-        /* ভিডিও প্লেয়ার স্টাইল */
-        .player-container { background: #000; padding: 10px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 30px; }
-        .video-js { width: 100% !important; height: auto; aspect-ratio: 16/9; border-radius: 8px; }
-        
-        /* চ্যানেল গ্রিড স্টাইল */
-        .channel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
-        .channel-btn { background: #1e1e2f; border: 2px solid #3b3b54; color: #fff; padding: 15px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; }
-        .channel-btn:hover { background: #00ffcc; color: #000; border-color: #00ffcc; transform: translateY(-3px); }
-        .channel-btn.active { background: #00ffcc; color: #000; border-color: #00ffcc; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>NEHAL LIVE TV</title>
+  <!-- Font Awesome 6 for hacker-style icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --hacker-green: #0f0;
+      --deep-black: #0a0a0a;
+      --terminal-bg: #0d0d0d;
+      --scanline: rgba(0, 255, 0, 0.05);
+      --glitch-text: #00cc00;
+      --border-color: #1f1f1f;
+      --highlight-cyan: #00ffff;
+      --dark-panel: #111111;
+      --text-dim: #aaaaaa;
+      --neon-glow: 0 0 8px rgba(0, 255, 0, 0.7);
+      --font-mono: 'Courier New', 'Fira Code', monospace;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background: #000000;
+      background-image: 
+        linear-gradient(rgba(0, 20, 0, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 20, 0, 0.15) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+
+    /* main terminal container */
+    .tv-interface {
+      width: 100%;
+      max-width: 480px;
+      height: 90vh;
+      max-height: 850px;
+      background: #030303;
+      border: 2px solid #2a3a2a;
+      box-shadow: 0 0 25px rgba(0, 255, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      backdrop-filter: blur(2px);
+    }
+
+    /* scanline effect overlay */
+    .tv-interface::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.03) 0px, rgba(0, 0, 0, 0.2) 2px, transparent 3px);
+      pointer-events: none;
+      z-index: 999;
+      border-radius: 24px;
+    }
+
+    /* ----- TOP MENU BAR ----- */
+    .top-menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #0b0f0b;
+      border-bottom: 1px solid #2e4a2e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+      position: relative;
+      z-index: 10;
+      border-top-left-radius: 22px;
+      border-top-right-radius: 22px;
+    }
+
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .hamburger {
+      font-size: 1.8rem;
+      color: #0f0;
+      cursor: pointer;
+      transition: 0.2s;
+      text-shadow: 0 0 8px #0f0;
+    }
+
+    .hamburger:hover {
+      color: #00ffff;
+      text-shadow: 0 0 15px #00ffff;
+    }
+
+    .tv-name {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #00ff00 0%, #00aa00 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 10px #00ff00;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tv-name i {
+      background: none;
+      -webkit-text-fill-color: #0f0;
+      font-size: 1.4rem;
+      text-shadow: 0 0 12px lime;
+    }
+
+    .menu-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .refresh-btn, .search-icon {
+      font-size: 1.5rem;
+      color: #0f0;
+      cursor: pointer;
+      transition: 0.2s;
+      text-shadow: 0 0 6px #0f0;
+      background: rgba(0, 30, 0, 0.5);
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #1f4a1f;
+    }
+
+    .refresh-btn:hover, .search-icon:hover {
+      color: #00ffff;
+      border-color: #00ffff;
+      text-shadow: 0 0 18px #00ffff;
+      background: rgba(0, 50, 50, 0.4);
+    }
+
+    /* search channel input (hidden until toggled) */
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: #0a0a0a;
+      border: 1px solid #2e5a2e;
+      border-radius: 30px;
+      padding: 4px 10px;
+      margin: 0 8px;
+      box-shadow: inset 0 0 10px #000;
+    }
+
+    .search-container input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #0f0;
+      font-family: var(--font-mono);
+      width: 110px;
+      font-size: 0.9rem;
+      padding: 6px 2px;
+    }
+
+    .search-container input::placeholder {
+      color: #2e7d2e;
+      font-style: italic;
+    }
+
+    .hidden-search {
+      display: none;
+    }
+
+    /* ----- LIVE STREAM AREA (glitchy placeholder) ----- */
+    .stream-player {
+      flex: 1;
+      background: #010101;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 2px solid #1f3a1f;
+      box-shadow: inset 0 0 60px rgba(0, 20, 0, 0.8);
+      margin: 4px 6px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      background: #cc0000;
+      color: white;
+      font-weight: bold;
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 18px red;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-transform: uppercase;
+      z-index: 10;
+      background: linear-gradient(145deg, #ff0000, #aa0000);
+      border: 1px solid #ff4444;
+    }
+
+    .glitch-screen {
+      font-family: var(--font-mono);
+      color: #0f0;
+      font-size: 2rem;
+      text-align: center;
+      opacity: 0.8;
+      text-shadow: 4px 4px 0 #003300, -2px -2px 0 #00aa00;
+      animation: glitch 2s infinite;
+      background: radial-gradient(circle at center, #051005 0%, #000 90%);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -1px); }
+      60% { transform: translate(-1px, -2px); }
+      80% { transform: translate(1px, 1px); }
+      100% { transform: translate(0); }
+    }
+
+    .channel-id {
+      font-size: 1.8rem;
+      background: #000;
+      padding: 8px 22px;
+      border: 1px dashed #0f0;
+      border-radius: 8px;
+      margin-top: 12px;
+      letter-spacing: 3px;
+    }
+
+    /* ----- BOTTOM NAVIGATION (Settings, Highlights, Live Events, Sports, Categories) ----- */
+    .bottom-dock {
+      background: #0c0f0c;
+      border-top: 2px solid #2a402a;
+      padding: 12px 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-around;
+      gap: 6px;
+      border-bottom-left-radius: 22px;
+      border-bottom-right-radius: 22px;
+      box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.8);
+      z-index: 10;
+      position: relative;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 0.7rem;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 12px;
+      min-width: 58px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(20, 30, 20, 0.5);
+      border: 1px solid transparent;
+    }
+
+    .nav-item i {
+      font-size: 1.4rem;
+      margin-bottom: 3px;
+      color: #0f0;
+      text-shadow: 0 0 6px #0f0;
+    }
+
+    .nav-item span {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: bold;
+    }
+
+    .nav-item:hover {
+      color: #00ffff;
+      border-color: #0f0;
+      background: #0e1a0e;
+      box-shadow: 0 0 15px #0f0;
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+      background: #0f2b0f;
+      border-color: #0f0;
+      box-shadow: 0 0 18px #0f0;
+    }
+
+    /* extra small tweaks */
+    @media (max-width: 400px) {
+      .nav-item {
+        min-width: 48px;
+        padding: 4px 2px;
+      }
+      .tv-name {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="wrapper">
-        <h1>📺 NEHAL TV - লাইভ স্ট্রিমিং</h1>
-        
-        <div class="player-container">
-            <video id="tv-player" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay preload="auto">
-                <source id="video-source" src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" type="application/x-mpegURL">
-            </video>
+  <div class="tv-interface">
+    <!-- TOP: Menu bar, TV Name, Search, Refresh -->
+    <div class="top-menu">
+      <div class="menu-left">
+        <div class="hamburger">
+          <i class="fas fa-bars"></i>
         </div>
-
-        <h2>চ্যানেল সমূহ</h2>
-        <div class="channel-grid">
-            <button class="channel-btn active" onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)">চ্যানেল ১ (টেস্ট)</button>
-            <button class="channel-btn" onclick="changeChannel('https://diceyk6a7voy4.cloudfront.net/e2bf9307-f9d6-4447-9b24-bfbe36df200a/master.m3u8', this)">চ্যানেল ২ (টেস্ট)</button>
-            </div>
+        <div class="tv-name">
+          <i class="fas fa-broadcast-tower"></i> NEHAL TV
+        </div>
+      </div>
+      <div class="menu-right">
+        <div class="search-icon" id="toggleSearchBtn">
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="refresh-btn" id="refreshButton">
+          <i class="fas fa-sync-alt"></i>
+        </div>
+      </div>
     </div>
 
-    <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
-    
-    <script>
-        var player = videojs('tv-player');
+    <!-- Search Channel input (hidden by default) -->
+    <div id="searchPanel" class="search-container hidden-search">
+      <i class="fas fa-terminal" style="color:#0f0; margin-right: 5px;"></i>
+      <input type="text" placeholder="CH/01-FF" id="channelSearchInput">
+      <i class="fas fa-times" style="color:#0f0; cursor:pointer; margin-left:5px;" id="closeSearchBtn"></i>
+    </div>
 
-        // চ্যানেল পরিবর্তন করার ফাংশন
-        function changeChannel(streamUrl, buttonElement) {
-            // প্লেয়ারে নতুন লিঙ্ক সেট করা
-            player.src({
-                src: streamUrl,
-                type: 'application/x-mpegURL'
-            });
-            player.play();
+    <!-- Live Stream Preview Area -->
+    <div class="stream-player">
+      <div class="live-badge">
+        <i class="fas fa-circle" style="font-size: 0.5rem; color: #ffaaaa;"></i> LIVE
+      </div>
+      <div class="glitch-screen">
+        <div style="font-size: 2.5rem; margin-bottom: 10px;">📡</div>
+        <div>STREAM_0x1A</div>
+        <div class="channel-id" id="currentChannelDisplay">CH_07</div>
+        <div style="font-size: 0.9rem; margin-top: 15px; color: #0f0; opacity:0.7;">[ 256 bps • encrypted ]</div>
+      </div>
+    </div>
 
-            // একটিভ বাটনের কালার চেঞ্জ করা
-            var buttons = document.getElementsByClassName('channel-btn');
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-            buttonElement.classList.add('active');
+    <!-- BOTTOM: Settings, Highlights, Live Events, Sports, Categories -->
+    <div class="bottom-dock">
+      <div class="nav-item active" data-section="settings">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </div>
+      <div class="nav-item" data-section="highlights">
+        <i class="fas fa-star"></i>
+        <span>Highlights</span>
+      </div>
+      <div class="nav-item" data-section="live">
+        <i class="fas fa-satellite-dish"></i>
+        <span>Live Events</span>
+      </div>
+      <div class="nav-item" data-section="sports">
+        <i class="fas fa-futbol"></i>
+        <span>Sports</span>
+      </div>
+      <div class="nav-item" data-section="categories">
+        <i class="fas fa-layer-group"></i>
+        <span>Categories</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // DOM Elements
+      const toggleSearchBtn = document.getElementById('toggleSearchBtn');
+      const searchPanel = document.getElementById('searchPanel');
+      const closeSearchBtn = document.getElementById('closeSearchBtn');
+      const channelSearchInput = document.getElementById('channelSearchInput');
+      const refreshButton = document.getElementById('refreshButton');
+      const currentChannelDisplay = document.getElementById('currentChannelDisplay');
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      // Current channel state
+      let currentChannel = 'CH_07';
+
+      // ----- Toggle Search Panel -----
+      toggleSearchBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (searchPanel.classList.contains('hidden-search')) {
+          searchPanel.classList.remove('hidden-search');
+          channelSearchInput.focus();
+        } else {
+          searchPanel.classList.add('hidden-search');
         }
-    </script>
+      });
+
+      // Close search with X button
+      closeSearchBtn.addEventListener('click', function() {
+        searchPanel.classList.add('hidden-search');
+        channelSearchInput.value = '';
+      });
+
+      // Search channel input: update channel on Enter
+      channelSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const newChannel = channelSearchInput.value.trim();
+          if (newChannel !== '') {
+            // hacker style: uppercase, prefix CH_ if not present
+            let formatted = newChannel.toUpperCase();
+            if (!formatted.startsWith('CH_') && !formatted.startsWith('CH')) {
+              formatted = 'CH_' + formatted;
+            } else if (formatted.startsWith('CH') && !formatted.includes('_')) {
+              formatted = 'CH_' + formatted.substring(2);
+            }
+            currentChannelDisplay.textContent = formatted;
+            currentChannel = formatted;
+            // Simulate channel change glitch
+            const glitchDiv = document.querySelector('.glitch-screen');
+            glitchDiv.style.animation = 'none';
+            setTimeout(() => {
+              glitchDiv.style.animation = 'glitch 2s infinite';
+            }, 10);
+            
+            // Close search panel after selection
+            searchPanel.classList.add('hidden-search');
+            channelSearchInput.value = '';
+          } else {
+            alert('[SYSTEM] Enter channel ID (e.g., 42 or CH_13)');
+          }
+        }
+      });
+
+      // ----- Refresh Button (reload effect + random channel suggestion) -----
+      refreshButton.addEventListener('click', function() {
+        // Visual feedback: icon spin
+        const icon = refreshButton.querySelector('i');
+        icon.style.transition = 'transform 0.4s';
+        icon.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+          icon.style.transition = 'none';
+          icon.style.transform = 'rotate(0deg)';
+        }, 400);
+        
+        // Random channel update for hacker feel
+        const randomSuffix = Math.floor(Math.random() * 99) + 1;
+        const randomHex = randomSuffix.toString(16).toUpperCase().padStart(2, '0');
+        const newRandomChannel = 'CH_' + randomHex;
+        currentChannelDisplay.textContent = newRandomChannel;
+        currentChannel = newRandomChannel;
+        
+        // Additional glitch effect on stream
+        const streamDiv = document.querySelector('.stream-player');
+        streamDiv.style.backgroundColor = '#001a00';
+        setTimeout(() => {
+          streamDiv.style.backgroundColor = '#010101';
+        }, 150);
+        
+        console.log('[REFRESH] tuned to ' + newRandomChannel);
+      });
+
+      // ----- Bottom Navigation active state + section simulation -----
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Remove active class from all
+          navItems.forEach(nav => nav.classList.remove('active'));
+          // Add active to clicked
+          this.classList.add('active');
+          
+          const section = this.getAttribute('data-section');
+          // Hacker console log simulation
+          console.log(`[NAV] Accessing ${section.toUpperCase()} module...`);
+          
+          // Optional: display brief message in stream area (hacker style)
+          const glitchDiv = document.querySelector('.glitch-screen div:first-child');
+          if (glitchDiv) {
+            const originalText = glitchDiv.innerHTML;
+            glitchDiv.innerHTML = `[${section.toUpperCase()}]`;
+            setTimeout(() => {
+              glitchDiv.innerHTML = originalText;
+            }, 600);
+          }
+          
+          // Update live badge or style based on section (just for fun)
+          const liveBadge = document.querySelector('.live-badge');
+          if (section === 'sports') {
+            liveBadge.style.background = 'linear-gradient(145deg, #0066ff, #0033aa)';
+            liveBadge.innerHTML = '<i class="fas fa-circle"></i> SPORTS';
+          } else if (section === 'live') {
+            liveBadge.style.background = 'linear-gradient(145deg, #ff0000, #aa0000)';
+            liveBadge.innerHTML = '<i class="fas fa-circle"></i> LIVE';
+          } else if (section === 'highlights') {
+            liveBadge.style.background = 'linear-gradient(145deg, #ffaa00, #cc7700)';
+            liveBadge.innerHTML = '<i class="fas fa-star"></i> HIGHLIGHT';
+          } else if (section === 'categories') {
+            liveBadge.style.background = 'linear-gradient(145deg, #aa00ff, #6600aa)';
+            liveBadge.innerHTML = '<i class="fas fa-cube"></i> CATEGORY';
+          } else if (section === 'settings') {
+            liveBadge.style.background = 'linear-gradient(145deg, #555555, #222222)';
+            liveBadge.innerHTML = '<i class="fas fa-cog"></i> SETTINGS';
+          }
+        });
+      });
+
+      // Additional: Click on hamburger menu could trigger something (simulate menu)
+      document.querySelector('.hamburger').addEventListener('click', function() {
+        alert('[MENU] :: ROOT OPTIONS :: \n- System Status\n- Network Log\n- Decryption Keys\n- Exit');
+      });
+
+      // Close search if click outside (on top menu area)
+      document.addEventListener('click', function(event) {
+        if (!searchPanel.contains(event.target) && event.target !== toggleSearchBtn && !toggleSearchBtn.contains(event.target)) {
+          if (!searchPanel.classList.contains('hidden-search')) {
+            searchPanel.classList.add('hidden-search');
+          }
+        }
+      });
+
+      // Initialize channel display
+      currentChannelDisplay.textContent = currentChannel;
+    })();
+  </script>
 </body>
 </html>
