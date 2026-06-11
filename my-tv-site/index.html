@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>NEHAL LIVE TV</title>
-  <!-- Font Awesome 6 for hacker-style icons -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>StreamVue · Live TV World</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -13,542 +12,580 @@
       box-sizing: border-box;
     }
 
-    :root {
-      --hacker-green: #0f0;
-      --deep-black: #0a0a0a;
-      --terminal-bg: #0d0d0d;
-      --scanline: rgba(0, 255, 0, 0.05);
-      --glitch-text: #00cc00;
-      --border-color: #1f1f1f;
-      --highlight-cyan: #00ffff;
-      --dark-panel: #111111;
-      --text-dim: #aaaaaa;
-      --neon-glow: 0 0 8px rgba(0, 255, 0, 0.7);
-      --font-mono: 'Courier New', 'Fira Code', monospace;
-    }
-
     body {
-      font-family: 'Segoe UI', 'Roboto', sans-serif;
-      background: #000000;
-      background-image: 
-        linear-gradient(rgba(0, 20, 0, 0.15) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 20, 0, 0.15) 1px, transparent 1px);
-      background-size: 40px 40px;
-      color: #e0e0e0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
+      background: #0a0c10;
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Poppins', sans-serif;
+      color: #f0f2f5;
+      overflow-x: hidden;
     }
 
-    /* main terminal container */
-    .tv-interface {
-      width: 100%;
-      max-width: 480px;
-      height: 90vh;
-      max-height: 850px;
-      background: #030303;
-      border: 2px solid #2a3a2a;
-      box-shadow: 0 0 25px rgba(0, 255, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
-      border-radius: 24px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      backdrop-filter: blur(2px);
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e1f24;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ff3b4a;
+      border-radius: 10px;
     }
 
-    /* scanline effect overlay */
-    .tv-interface::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.03) 0px, rgba(0, 0, 0, 0.2) 2px, transparent 3px);
-      pointer-events: none;
-      z-index: 999;
-      border-radius: 24px;
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px 90px 20px;
     }
 
-    /* ----- TOP MENU BAR ----- */
-    .top-menu {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: #0b0f0b;
-      border-bottom: 1px solid #2e4a2e;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
-      position: relative;
-      z-index: 10;
-      border-top-left-radius: 22px;
-      border-top-right-radius: 22px;
-    }
-
-    .menu-left {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .hamburger {
-      font-size: 1.8rem;
-      color: #0f0;
-      cursor: pointer;
-      transition: 0.2s;
-      text-shadow: 0 0 8px #0f0;
-    }
-
-    .hamburger:hover {
-      color: #00ffff;
-      text-shadow: 0 0 15px #00ffff;
-    }
-
-    .tv-name {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 1.6rem;
-      letter-spacing: 2px;
-      background: linear-gradient(180deg, #00ff00 0%, #00aa00 80%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 10px #00ff00;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .tv-name i {
-      background: none;
-      -webkit-text-fill-color: #0f0;
-      font-size: 1.4rem;
-      text-shadow: 0 0 12px lime;
-    }
-
-    .menu-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .refresh-btn, .search-icon {
-      font-size: 1.5rem;
-      color: #0f0;
-      cursor: pointer;
-      transition: 0.2s;
-      text-shadow: 0 0 6px #0f0;
-      background: rgba(0, 30, 0, 0.5);
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #1f4a1f;
-    }
-
-    .refresh-btn:hover, .search-icon:hover {
-      color: #00ffff;
-      border-color: #00ffff;
-      text-shadow: 0 0 18px #00ffff;
-      background: rgba(0, 50, 50, 0.4);
-    }
-
-    /* search channel input (hidden until toggled) */
-    .search-container {
-      display: flex;
-      align-items: center;
-      background: #0a0a0a;
-      border: 1px solid #2e5a2e;
-      border-radius: 30px;
-      padding: 4px 10px;
-      margin: 0 8px;
-      box-shadow: inset 0 0 10px #000;
-    }
-
-    .search-container input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #0f0;
-      font-family: var(--font-mono);
-      width: 110px;
-      font-size: 0.9rem;
-      padding: 6px 2px;
-    }
-
-    .search-container input::placeholder {
-      color: #2e7d2e;
-      font-style: italic;
-    }
-
-    .hidden-search {
-      display: none;
-    }
-
-    /* ----- LIVE STREAM AREA (glitchy placeholder) ----- */
-    .stream-player {
-      flex: 1;
-      background: #010101;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 2px solid #1f3a1f;
-      box-shadow: inset 0 0 60px rgba(0, 20, 0, 0.8);
-      margin: 4px 6px;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    .live-badge {
-      position: absolute;
-      top: 12px;
-      left: 16px;
-      background: #cc0000;
-      color: white;
-      font-weight: bold;
-      font-size: 0.8rem;
-      padding: 4px 12px;
-      border-radius: 20px;
-      letter-spacing: 1px;
-      box-shadow: 0 0 18px red;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      text-transform: uppercase;
-      z-index: 10;
-      background: linear-gradient(145deg, #ff0000, #aa0000);
-      border: 1px solid #ff4444;
-    }
-
-    .glitch-screen {
-      font-family: var(--font-mono);
-      color: #0f0;
-      font-size: 2rem;
-      text-align: center;
-      opacity: 0.8;
-      text-shadow: 4px 4px 0 #003300, -2px -2px 0 #00aa00;
-      animation: glitch 2s infinite;
-      background: radial-gradient(circle at center, #051005 0%, #000 90%);
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    @keyframes glitch {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(2px, -1px); }
-      60% { transform: translate(-1px, -2px); }
-      80% { transform: translate(1px, 1px); }
-      100% { transform: translate(0); }
-    }
-
-    .channel-id {
-      font-size: 1.8rem;
-      background: #000;
-      padding: 8px 22px;
-      border: 1px dashed #0f0;
-      border-radius: 8px;
-      margin-top: 12px;
-      letter-spacing: 3px;
-    }
-
-    /* ----- BOTTOM NAVIGATION (Settings, Highlights, Live Events, Sports, Categories) ----- */
-    .bottom-dock {
-      background: #0c0f0c;
-      border-top: 2px solid #2a402a;
-      padding: 12px 10px 14px;
+    /* Top Bar */
+    .top-bar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-around;
-      gap: 6px;
-      border-bottom-left-radius: 22px;
-      border-bottom-right-radius: 22px;
-      box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.8);
-      z-index: 10;
-      position: relative;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 0 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 28px;
     }
 
+    .logo-area {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tv-name {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF5E62 0%, #FF9966 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+    .tv-badge {
+      background: #ff3b4a20;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #ff9f7c;
+      border: 1px solid #ff5e6220;
+    }
+
+    .menu-links {
+      display: flex;
+      gap: 28px;
+      background: #121317;
+      padding: 6px 18px;
+      border-radius: 60px;
+      backdrop-filter: blur(2px);
+    }
+    .menu-links a {
+      color: #ddd;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .menu-links a i {
+      font-size: 1rem;
+    }
+    .menu-links a:hover, .menu-links a.active {
+      color: #ff7340;
+    }
+
+    .search-refresh {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #111215;
+      padding: 5px 5px 5px 18px;
+      border-radius: 48px;
+      border: 1px solid #2c2e36;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-box i {
+      color: #ff8c5a;
+    }
+    .search-box input {
+      background: transparent;
+      border: none;
+      padding: 8px 0;
+      color: white;
+      font-size: 0.9rem;
+      width: 220px;
+      outline: none;
+    }
+    .search-box input::placeholder {
+      color: #6b6e7c;
+    }
+    .refresh-btn {
+      background: #2a2c34;
+      border: none;
+      color: white;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .refresh-btn:hover {
+      background: #ff5e62;
+      transform: rotate(30deg);
+    }
+
+    /* Categories */
+    .categories-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 28px 0 20px;
+      border-bottom: 1px solid #20222a;
+      padding-bottom: 12px;
+    }
+    .category-chip {
+      background: transparent;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #b0b3c0;
+      border: 1px solid #2a2c34;
+      transition: all 0.2s;
+    }
+    .category-chip i {
+      margin-right: 8px;
+    }
+    .category-chip.active {
+      background: #ff3b4a;
+      color: white;
+      border-color: #ff3b4a;
+      box-shadow: 0 4px 12px rgba(255,59,74,0.2);
+    }
+
+    /* Channel Grid with Logo */
+    .channels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+      margin-bottom: 40px;
+    }
+    .channel-card {
+      background: #111317;
+      border-radius: 20px;
+      padding: 14px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid #23252e;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .channel-card:hover {
+      transform: translateY(-3px);
+      background: #1a1d26;
+      border-color: #ff7340;
+      box-shadow: 0 12px 20px -10px rgba(0,0,0,0.6);
+    }
+    .channel-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #252a36, #181c24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #ff8c5a;
+      flex-shrink: 0;
+    }
+    .channel-logo img {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      object-fit: contain;
+    }
+    .channel-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .channel-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .channel-info span {
+      font-size: 0.7rem;
+      color: #8f92a0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Live Highlight Banner */
+    .live-highlight {
+      background: linear-gradient(95deg, #1b1e2a, #0f1119);
+      border-radius: 24px;
+      margin: 16px 0 20px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      border-left: 6px solid #ff3b4a;
+    }
+    .highlight-text h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .highlight-text p {
+      color: #bcbfd0;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+    .live-badge {
+      background: #ff3b4a;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0e0f14e6;
+      backdrop-filter: blur(20px);
+      border-top: 1px solid #2c2f3a;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 12px 20px 22px;
+      z-index: 100;
+    }
     .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      color: #aaa;
-      font-size: 0.7rem;
-      font-weight: 500;
-      transition: 0.2s;
+      gap: 6px;
       cursor: pointer;
-      padding: 6px 8px;
-      border-radius: 12px;
-      min-width: 58px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      background: rgba(20, 30, 20, 0.5);
-      border: 1px solid transparent;
+      font-size: 0.7rem;
+      color: #a0a2b0;
+      transition: 0.2s;
     }
-
     .nav-item i {
-      font-size: 1.4rem;
-      margin-bottom: 3px;
-      color: #0f0;
-      text-shadow: 0 0 6px #0f0;
+      font-size: 1.5rem;
+    }
+    .nav-item.active, .nav-item:hover {
+      color: #ff7340;
+      transform: translateY(-2px);
     }
 
-    .nav-item span {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: bold;
+    .empty-msg {
+      text-align: center;
+      padding: 50px;
+      color: #7b7e8c;
     }
 
-    .nav-item:hover {
-      color: #00ffff;
-      border-color: #0f0;
-      background: #0e1a0e;
-      box-shadow: 0 0 15px #0f0;
-    }
-
-    .nav-item.active {
-      color: #ffffff;
-      background: #0f2b0f;
-      border-color: #0f0;
-      box-shadow: 0 0 18px #0f0;
-    }
-
-    /* extra small tweaks */
-    @media (max-width: 400px) {
-      .nav-item {
-        min-width: 48px;
-        padding: 4px 2px;
+    @media (max-width: 700px) {
+      .app {
+        padding: 0 14px 90px;
       }
-      .tv-name {
-        font-size: 1.3rem;
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .channels-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
       }
     }
   </style>
 </head>
 <body>
-  <div class="tv-interface">
-    <!-- TOP: Menu bar, TV Name, Search, Refresh -->
-    <div class="top-menu">
-      <div class="menu-left">
-        <div class="hamburger">
-          <i class="fas fa-bars"></i>
-        </div>
-        <div class="tv-name">
-          <i class="fas fa-broadcast-tower"></i> NEHAL TV
-        </div>
-      </div>
-      <div class="menu-right">
-        <div class="search-icon" id="toggleSearchBtn">
-          <i class="fas fa-search"></i>
-        </div>
-        <div class="refresh-btn" id="refreshButton">
-          <i class="fas fa-sync-alt"></i>
-        </div>
-      </div>
+<div class="app">
+  <div class="top-bar">
+    <div class="logo-area">
+      <span class="tv-name"><i class="fas fa-tv"></i> StreamVue</span>
+      <span class="tv-badge">LIVE · 500+ CH</span>
     </div>
-
-    <!-- Search Channel input (hidden by default) -->
-    <div id="searchPanel" class="search-container hidden-search">
-      <i class="fas fa-terminal" style="color:#0f0; margin-right: 5px;"></i>
-      <input type="text" placeholder="CH/01-FF" id="channelSearchInput">
-      <i class="fas fa-times" style="color:#0f0; cursor:pointer; margin-left:5px;" id="closeSearchBtn"></i>
+    <div class="menu-links">
+      <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-fire"></i> Trending</a>
+      <a href="#"><i class="fas fa-star"></i> Favorites</a>
     </div>
-
-    <!-- Live Stream Preview Area -->
-    <div class="stream-player">
-      <div class="live-badge">
-        <i class="fas fa-circle" style="font-size: 0.5rem; color: #ffaaaa;"></i> LIVE
+    <div class="search-refresh">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search channels...">
       </div>
-      <div class="glitch-screen">
-        <div style="font-size: 2.5rem; margin-bottom: 10px;">📡</div>
-        <div>STREAM_0x1A</div>
-        <div class="channel-id" id="currentChannelDisplay">CH_07</div>
-        <div style="font-size: 0.9rem; margin-top: 15px; color: #0f0; opacity:0.7;">[ 256 bps • encrypted ]</div>
-      </div>
-    </div>
-
-    <!-- BOTTOM: Settings, Highlights, Live Events, Sports, Categories -->
-    <div class="bottom-dock">
-      <div class="nav-item active" data-section="settings">
-        <i class="fas fa-cog"></i>
-        <span>Settings</span>
-      </div>
-      <div class="nav-item" data-section="highlights">
-        <i class="fas fa-star"></i>
-        <span>Highlights</span>
-      </div>
-      <div class="nav-item" data-section="live">
-        <i class="fas fa-satellite-dish"></i>
-        <span>Live Events</span>
-      </div>
-      <div class="nav-item" data-section="sports">
-        <i class="fas fa-futbol"></i>
-        <span>Sports</span>
-      </div>
-      <div class="nav-item" data-section="categories">
-        <i class="fas fa-layer-group"></i>
-        <span>Categories</span>
-      </div>
+      <button class="refresh-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
     </div>
   </div>
 
-  <script>
-    (function() {
-      // DOM Elements
-      const toggleSearchBtn = document.getElementById('toggleSearchBtn');
-      const searchPanel = document.getElementById('searchPanel');
-      const closeSearchBtn = document.getElementById('closeSearchBtn');
-      const channelSearchInput = document.getElementById('channelSearchInput');
-      const refreshButton = document.getElementById('refreshButton');
-      const currentChannelDisplay = document.getElementById('currentChannelDisplay');
-      const navItems = document.querySelectorAll('.nav-item');
+  <div class="live-highlight" id="highlightBanner">
+    <div class="highlight-text">
+      <h3><i class="fas fa-futbol"></i> 🔴 LIVE: FIFA World Cup · T Sports HD</h3>
+      <p>Vitality T20 Blast 2025 · Premier League · LaLiga</p>
+    </div>
+    <div class="live-badge"><i class="fas fa-circle" style="font-size: 0.6rem;"></i> 12 LIVE EVENTS</div>
+  </div>
+
+  <div class="categories-wrapper" id="categoryList"></div>
+  <div id="channelsContainer" class="channels-grid"></div>
+</div>
+
+<div class="bottom-nav" id="bottomNav">
+  <div class="nav-item" data-tab="settings"><i class="fas fa-cog"></i><span>Settings</span></div>
+  <div class="nav-item" data-tab="highlights"><i class="fas fa-chart-line"></i><span>Highlights</span></div>
+  <div class="nav-item" data-tab="liveevents"><i class="fas fa-broadcast-tower"></i><span>Live Events</span></div>
+  <div class="nav-item" data-tab="sports"><i class="fas fa-medal"></i><span>Sports</span></div>
+  <div class="nav-item" data-tab="categories"><i class="fas fa-th-large"></i><span>Categories</span></div>
+</div>
+
+<script>
+  // Complete channel list from screenshots
+  const masterChannels = [
+    "FIFA World Cup", "FIFA World Cup Arabic", "BTV NATIONAL HD", "BTV CTG", "T Sports HD", "Peace TV Bangla HD", "TIME TV USA", "CHANNEL I", "NTV", "BANGLA VISION", "RTV", "ATN Bangla", "ETV", "Maasranga Television", "Deepto TV", "GAZI TV", "DESH", "BOSHAKH TV", "CHANNEL 9", "Adian TV", "SA TV", "DURONTO TV", "BANGLA TV", "Ananda TV", "MY TV", "Global TV", "BJUY TV", "NEXUS Television", "MOHONA TV", "DRAMA 24", "SOMOV TV", "CHANNEL 24", "ATN NEWS", "Independent TV", "DBC NEWS", "Ekhon TV", "NEWS 24 BD", "EKATTOR TV", "JAMUNA TV", "MADANI TV", "Toffee Dramas", "Toffee Movies", "Movie Bangla", "Islamic TV",
+    "Sky Sports Premier League", "Sky Sports Cricket", "Sky Sports Football", "Sky Sports F1", "Sky Sports News", "Sky Sports Main Event",
+    "Sony Sports 1", "Sony Sports 2", "Sony Sports 3", "Sony Ten Cricket", "Sony PIX", "Sony Max",
+    "Star Sports 1", "Star Sports 2", "Star Sports 3", "Star Movies HD", "Star Plus HD",
+    "CNN", "CNN International", "BBC News", "BBC Earth", "Al Jazeera", "Sky News", "FOX News", "MSNBC", "CNBC", "Bloomberg TV",
+    "HBO", "HBO Signature", "HBO Zone", "HBO Max Movies",
+    "Disney Channel", "Disney Junior", "Disney XD", "Nickelodeon", "Nick Jr", "Cartoon Network", "PBS Kids", "Discovery Kids",
+    "National Geographic", "Discovery Channel", "Animal Planet", "History TV18", "TLC", "Travel Channel",
+    "MTV", "VH1", "9XM", "B4U Music", "Zing", "Zoom",
+    "ESPN", "Fox Sports", "TNT Sports 1", "TNT Sports 2", "Willow Cricket", "Ten Cricket", "Euro Sports",
+    "Zee TV", "Zee Cinema", "Zee News", "Colors", "&TV", "Shemaroo TV",
+    "DD National", "DD Sports", "Pogo", "Sony Yay",
+    "Euronews", "France 24", "RT News", "CGTN", "TRT World", "NHK World", "WION"
+  ];
+  
+  // Add numbered channels
+  for (let i = 1; i <= 100; i++) {
+    masterChannels.push(`CHANNEL ${i}`);
+  }
+  
+  // Logo database (real official logo URLs for major channels)
+  const logoDatabase = {
+    "sky sports": "https://logo.clearbit.com/sky.com",
+    "sony": "https://logo.clearbit.com/sony.com",
+    "star sports": "https://logo.clearbit.com/star.com",
+    "cnn": "https://logo.clearbit.com/cnn.com",
+    "bbc": "https://logo.clearbit.com/bbc.com",
+    "hbo": "https://logo.clearbit.com/hbo.com",
+    "disney": "https://logo.clearbit.com/disney.com",
+    "nickelodeon": "https://logo.clearbit.com/nick.com",
+    "cartoon network": "https://logo.clearbit.com/cartoonnetwork.com",
+    "national geographic": "https://logo.clearbit.com/natgeotv.com",
+    "discovery": "https://logo.clearbit.com/discovery.com",
+    "mtv": "https://logo.clearbit.com/mtv.com",
+    "espn": "https://logo.clearbit.com/espn.com",
+    "fox sports": "https://logo.clearbit.com/foxsports.com",
+    "tnt sports": "https://logo.clearbit.com/tntsports.com",
+    "willow cricket": "https://logo.clearbit.com/willow.tv",
+    "zee": "https://logo.clearbit.com/zee.com",
+    "colors": "https://logo.clearbit.com/colors.in",
+    "eurosport": "https://logo.clearbit.com/eurosport.com",
+    "al jazeera": "https://logo.clearbit.com/aljazeera.com",
+    "france 24": "https://logo.clearbit.com/france24.com",
+    "bloomberg": "https://logo.clearbit.com/bloomberg.com",
+    "cnbc": "https://logo.clearbit.com/cnbc.com",
+    "msnbc": "https://logo.clearbit.com/msnbc.com",
+    "fox news": "https://logo.clearbit.com/foxnews.com",
+    "trt world": "https://logo.clearbit.com/trtworld.com",
+    "nhk world": "https://logo.clearbit.com/nhk.or.jp",
+    "wion": "https://logo.clearbit.com/wionews.com"
+  };
+  
+  function getLogoUrl(channelName) {
+    const nameLower = channelName.toLowerCase();
+    for (const [key, url] of Object.entries(logoDatabase)) {
+      if (nameLower.includes(key)) {
+        return url;
+      }
+    }
+    return null;
+  }
+  
+  function getInitials(name) {
+    return name.substring(0, 2).toUpperCase();
+  }
+  
+  function getGradientColor(name) {
+    const colors = [
+      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+      "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+      "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+      "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+      "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+      "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
+    ];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = ((hash << 5) - hash) + name.charCodeAt(i);
+      hash |= 0;
+    }
+    return colors[Math.abs(hash) % colors.length];
+  }
+  
+  // Category detection
+  function getChannelCategory(chName) {
+    let name = chName.toLowerCase();
+    const sports = ["sport", "cricket", "football", "fifa", "tennis", "nfl", "premier league", "la liga", "t20", "willow", "sky sport", "espn", "fox sport", "sony sports", "tnt sport", "star sports", "euro sport"];
+    const movies = ["movie", "cinema", "film", "sony pix", "star movies", "hbo", "zee cinema", "bollywood"];
+    const news = ["news", "cnn", "bbc", "al jazeera", "sky news", "ndtv", "cnbc", "msnbc", "reuters", "france 24", "bloomberg", "wion", "nhk", "cgtn", "trt"];
+    const kids = ["cartoon", "disney", "nick", "pbs kids", "pogo", "kids", "nick jr"];
+    
+    if (sports.some(k => name.includes(k))) return "Sports";
+    if (movies.some(k => name.includes(k))) return "Movies";
+    if (news.some(k => name.includes(k))) return "News";
+    if (kids.some(k => name.includes(k))) return "Kids";
+    if (name.includes("music") || name.includes("mtv") || name.includes("9x") || name.includes("b4u")) return "Music";
+    if (name.includes("islam") || name.includes("peace") || name.includes("deen")) return "Religious";
+    return "Entertainment";
+  }
+  
+  // Create unique channels
+  let uniqueMap = new Map();
+  masterChannels.forEach(ch => {
+    if (!uniqueMap.has(ch)) {
+      uniqueMap.set(ch, {
+        name: ch,
+        category: getChannelCategory(ch),
+        logoUrl: getLogoUrl(ch)
+      });
+    }
+  });
+  let channels = Array.from(uniqueMap.values());
+  
+  let activeCategory = "All";
+  let searchQuery = "";
+  
+  function renderChannels() {
+    let filtered = channels.filter(ch => {
+      const matchCat = activeCategory === "All" || ch.category === activeCategory;
+      const matchSearch = searchQuery === "" || ch.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCat && matchSearch;
+    });
+    
+    const container = document.getElementById("channelsContainer");
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="empty-msg"><i class="fas fa-tv-slash"></i><br/>No channels found</div>`;
+      return;
+    }
+    
+    container.innerHTML = filtered.map(ch => {
+      const logoHtml = ch.logoUrl 
+        ? `<img src="${ch.logoUrl}" onerror="this.parentElement.style.background='${getGradientColor(ch.name)}';this.style.display='none';this.parentElement.innerHTML='${getInitials(ch.name)}'">`
+        : `<span style="background: ${getGradientColor(ch.name)}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:14px;">${getInitials(ch.name)}</span>`;
       
-      // Current channel state
-      let currentChannel = 'CH_07';
-
-      // ----- Toggle Search Panel -----
-      toggleSearchBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (searchPanel.classList.contains('hidden-search')) {
-          searchPanel.classList.remove('hidden-search');
-          channelSearchInput.focus();
-        } else {
-          searchPanel.classList.add('hidden-search');
-        }
+      return `
+        <div class="channel-card" data-channel="${ch.name.replace(/"/g, '&quot;')}">
+          <div class="channel-logo">
+            ${logoHtml}
+          </div>
+          <div class="channel-info">
+            <h4>${ch.name}</h4>
+            <span><i class="fas fa-tag"></i> ${ch.category}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    document.querySelectorAll('.channel-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const chName = card.getAttribute('data-channel');
+        alert(`📺 Now Playing: ${chName}\nStream URL will be integrated in app version.`);
       });
-
-      // Close search with X button
-      closeSearchBtn.addEventListener('click', function() {
-        searchPanel.classList.add('hidden-search');
-        channelSearchInput.value = '';
+    });
+  }
+  
+  function renderCategories() {
+    const categories = ["All", ...new Set(channels.map(c => c.category))].sort();
+    const container = document.getElementById("categoryList");
+    container.innerHTML = categories.map(cat => `
+      <div class="category-chip ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">
+        <i class="fas ${cat === 'All' ? 'fa-globe' : cat === 'Sports' ? 'fa-futbol' : cat === 'Movies' ? 'fa-film' : cat === 'News' ? 'fa-newspaper' : 'fa-tag'}"></i>
+        ${cat}
+      </div>
+    `).join('');
+    
+    document.querySelectorAll('.category-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        activeCategory = chip.getAttribute('data-cat');
+        renderCategories();
+        renderChannels();
       });
-
-      // Search channel input: update channel on Enter
-      channelSearchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          const newChannel = channelSearchInput.value.trim();
-          if (newChannel !== '') {
-            // hacker style: uppercase, prefix CH_ if not present
-            let formatted = newChannel.toUpperCase();
-            if (!formatted.startsWith('CH_') && !formatted.startsWith('CH')) {
-              formatted = 'CH_' + formatted;
-            } else if (formatted.startsWith('CH') && !formatted.includes('_')) {
-              formatted = 'CH_' + formatted.substring(2);
-            }
-            currentChannelDisplay.textContent = formatted;
-            currentChannel = formatted;
-            // Simulate channel change glitch
-            const glitchDiv = document.querySelector('.glitch-screen');
-            glitchDiv.style.animation = 'none';
-            setTimeout(() => {
-              glitchDiv.style.animation = 'glitch 2s infinite';
-            }, 10);
-            
-            // Close search panel after selection
-            searchPanel.classList.add('hidden-search');
-            channelSearchInput.value = '';
-          } else {
-            alert('[SYSTEM] Enter channel ID (e.g., 42 or CH_13)');
-          }
-        }
-      });
-
-      // ----- Refresh Button (reload effect + random channel suggestion) -----
-      refreshButton.addEventListener('click', function() {
-        // Visual feedback: icon spin
-        const icon = refreshButton.querySelector('i');
-        icon.style.transition = 'transform 0.4s';
-        icon.style.transform = 'rotate(360deg)';
-        setTimeout(() => {
-          icon.style.transition = 'none';
-          icon.style.transform = 'rotate(0deg)';
-        }, 400);
-        
-        // Random channel update for hacker feel
-        const randomSuffix = Math.floor(Math.random() * 99) + 1;
-        const randomHex = randomSuffix.toString(16).toUpperCase().padStart(2, '0');
-        const newRandomChannel = 'CH_' + randomHex;
-        currentChannelDisplay.textContent = newRandomChannel;
-        currentChannel = newRandomChannel;
-        
-        // Additional glitch effect on stream
-        const streamDiv = document.querySelector('.stream-player');
-        streamDiv.style.backgroundColor = '#001a00';
-        setTimeout(() => {
-          streamDiv.style.backgroundColor = '#010101';
-        }, 150);
-        
-        console.log('[REFRESH] tuned to ' + newRandomChannel);
-      });
-
-      // ----- Bottom Navigation active state + section simulation -----
-      navItems.forEach(item => {
-        item.addEventListener('click', function() {
-          // Remove active class from all
-          navItems.forEach(nav => nav.classList.remove('active'));
-          // Add active to clicked
-          this.classList.add('active');
-          
-          const section = this.getAttribute('data-section');
-          // Hacker console log simulation
-          console.log(`[NAV] Accessing ${section.toUpperCase()} module...`);
-          
-          // Optional: display brief message in stream area (hacker style)
-          const glitchDiv = document.querySelector('.glitch-screen div:first-child');
-          if (glitchDiv) {
-            const originalText = glitchDiv.innerHTML;
-            glitchDiv.innerHTML = `[${section.toUpperCase()}]`;
-            setTimeout(() => {
-              glitchDiv.innerHTML = originalText;
-            }, 600);
-          }
-          
-          // Update live badge or style based on section (just for fun)
-          const liveBadge = document.querySelector('.live-badge');
-          if (section === 'sports') {
-            liveBadge.style.background = 'linear-gradient(145deg, #0066ff, #0033aa)';
-            liveBadge.innerHTML = '<i class="fas fa-circle"></i> SPORTS';
-          } else if (section === 'live') {
-            liveBadge.style.background = 'linear-gradient(145deg, #ff0000, #aa0000)';
-            liveBadge.innerHTML = '<i class="fas fa-circle"></i> LIVE';
-          } else if (section === 'highlights') {
-            liveBadge.style.background = 'linear-gradient(145deg, #ffaa00, #cc7700)';
-            liveBadge.innerHTML = '<i class="fas fa-star"></i> HIGHLIGHT';
-          } else if (section === 'categories') {
-            liveBadge.style.background = 'linear-gradient(145deg, #aa00ff, #6600aa)';
-            liveBadge.innerHTML = '<i class="fas fa-cube"></i> CATEGORY';
-          } else if (section === 'settings') {
-            liveBadge.style.background = 'linear-gradient(145deg, #555555, #222222)';
-            liveBadge.innerHTML = '<i class="fas fa-cog"></i> SETTINGS';
-          }
-        });
-      });
-
-      // Additional: Click on hamburger menu could trigger something (simulate menu)
-      document.querySelector('.hamburger').addEventListener('click', function() {
-        alert('[MENU] :: ROOT OPTIONS :: \n- System Status\n- Network Log\n- Decryption Keys\n- Exit');
-      });
-
-      // Close search if click outside (on top menu area)
-      document.addEventListener('click', function(event) {
-        if (!searchPanel.contains(event.target) && event.target !== toggleSearchBtn && !toggleSearchBtn.contains(event.target)) {
-          if (!searchPanel.classList.contains('hidden-search')) {
-            searchPanel.classList.add('hidden-search');
-          }
-        }
-      });
-
-      // Initialize channel display
-      currentChannelDisplay.textContent = currentChannel;
-    })();
-  </script>
+    });
+  }
+  
+  function updateHighlight(tab) {
+    const banner = document.getElementById("highlightBanner");
+    const highlights = {
+      highlights: '<div class="highlight-text"><h3><i class="fas fa-fire"></i> 🔥 TOP HIGHLIGHTS</h3><p>FIFA WC Finals · T20 Blast 2025 · Premier League Goals</p></div><div class="live-badge"><i class="fas fa-eye"></i> 15+ Highlights</div>',
+      liveevents: '<div class="highlight-text"><h3><i class="fas fa-calendar-week"></i> 🟢 LIVE EVENTS NOW</h3><p>Vitality T20 Blast · LaLiga · Sky Sports Cricket Live</p></div><div class="live-badge"><i class="fas fa-dot-circle"></i> 8 LIVE MATCHES</div>',
+      sports: '<div class="highlight-text"><h3><i class="fas fa-medal"></i> 🏆 SPORTS ZONE</h3><p>All Sports: Willow Cricket, Star Sports, TNT, Sony Sports Network</p></div><div class="live-badge"><i class="fas fa-futbol"></i> 24/7 Sports</div>',
+      default: '<div class="highlight-text"><h3><i class="fas fa-tv"></i> 🔴 LIVE: FIFA World Cup · T Sports HD</h3><p>Vitality T20 Blast 2025 · Premier League · LaLiga</p></div><div class="live-badge"><i class="fas fa-circle"></i> 12 LIVE EVENTS</div>'
+    };
+    banner.innerHTML = highlights[tab] || highlights.default;
+  }
+  
+  // Bottom navigation
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      item.classList.add('active');
+      const tab = item.getAttribute('data-tab');
+      
+      if (tab === 'settings') alert("⚙️ Settings: Language, Quality, Favorites (App ready)");
+      else if (tab === 'highlights') { updateHighlight('highlights'); activeCategory = "All"; searchQuery = ""; document.getElementById("searchInput").value = ""; renderCategories(); renderChannels(); }
+      else if (tab === 'liveevents') { updateHighlight('liveevents'); activeCategory = "All"; searchQuery = ""; document.getElementById("searchInput").value = ""; renderCategories(); renderChannels(); }
+      else if (tab === 'sports') { updateHighlight('sports'); activeCategory = "Sports"; renderCategories(); renderChannels(); }
+      else if (tab === 'categories') alert("📺 Browse by Categories using the chips above!");
+    });
+  });
+  
+  document.getElementById("refreshBtn").addEventListener("click", () => {
+    searchQuery = "";
+    activeCategory = "All";
+    document.getElementById("searchInput").value = "";
+    renderCategories();
+    renderChannels();
+    updateHighlight('default');
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+  });
+  
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    searchQuery = e.target.value;
+    renderChannels();
+  });
+  
+  renderCategories();
+  renderChannels();
+</script>
 </body>
 </html>
